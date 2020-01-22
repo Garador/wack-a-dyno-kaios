@@ -4,16 +4,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
-
-    <script type="text/javascript" src="./modernizr.min.js"></script>
-    <script type="text/javascript" src="./jquery-3.4.1.slim.min.js"></script>
-    <script type="text/javascript" src="./dexie.min.js"></script>
-
-    
-    <script type="text/javascript" src="./index.js"></script>
-    <link rel="stylesheet" href="./index.css">
+    <title>Wack-a-Dino</title>
+    <link rel="stylesheet" href="assets/css/softkey.css">
+    <link rel="stylesheet" href="assets/css/index.css">
+    <script type="text/javascript" src="assets/js/modernizr.min.js"></script>
+    <script type="text/javascript" src="assets/js/jquery-3.4.1.slim.min.js"></script>
+    <script type="text/javascript" src="assets/js/dexie.min.js"></script>
+    <script type="text/javascript" src="assets/js/index.js"></script>
 </head>
 
 <body>
@@ -125,7 +122,7 @@
                                     fill="rgb(235,235,235)" />
                             </g>
                             <circle vector-effect="non-scaling-stroke" cx="212.30986650808822" cy="370.69013349191187"
-                                r="4.5" id="Monocle" fill="rgb(255,253,253)" fill-opacity="0.4" style=":undefined;"
+                                r="4.5" id="Monocle" fill="rgb(255,253,253)" fill-opacity="0.4"
                                 stroke-width="0.4" stroke="rgb(83,83,83)" stroke-linejoin="miter"
                                 stroke-linecap="square" stroke-miterlimit="3" />
                         </g>
@@ -133,7 +130,14 @@
                 </svg>
             </div>
         </div>
+        <!--
         <button class="start" (click)="">START!</button>
+        -->
+        <div id="softkey">
+            <label id="left"></label>
+            <label id="center">Start Game</label>
+            <label id="right"></label>
+        </div>
     </div>
 </body>
 

@@ -1,13 +1,14 @@
-$(document).ready(function(){
+$(document).ready(function () {
     let dinoOriginal = document.querySelector('.dino--original');
     let fieldEl = document.querySelector('.field');
     let scoreEl = document.querySelector('.score');
     let highestScorelement = document.querySelector('.highest-score');
-    let startEl = document.querySelector('.start');
+    let startEl = document.querySelector('#softkey');
     let timeEl = document.querySelector('.time');
     let dinosFrag = document.createDocumentFragment();
     let max = 7;
     let dinos = [];
+    let dinosSVGs = [];
     let score = 0;
     let isTouch = true;
     let isRunning = false;
@@ -37,6 +38,7 @@ $(document).ready(function(){
     }
 
     function start() {
+        if(isRunning) return;
         for (let i = 0; i < dinos.length; i++) {
             let dinoSVG = dinos[i].querySelector('#Dino');
             dinoSVG.style.transform = 'translateY(80%)';
@@ -49,7 +51,6 @@ $(document).ready(function(){
 
         if (!isRunning) {
             setTimer();
-            startEl.classList.add('hide');
             score = 0;
             scoreEl.innerText = score;
             isRunning = true;
@@ -60,7 +61,7 @@ $(document).ready(function(){
     function gameOver() {
         clearInterval(timer);
         isRunning = false;
-        startEl.classList.remove('hide');
+        //startEl.classList.remove('hide');
         for (let i = 0; i < dinos.length; i++) {
             let dinoSVG = dinos[i].querySelector('#Dino');
             dinoSVG.style.transform = 'translateY(80%)';
@@ -130,6 +131,25 @@ $(document).ready(function(){
 
             function whack(ev) {
                 if (isRunning) {
+
+                    if(!dino.dinoA){    //The bounding box area for the dino
+                        dino.dinoA = dino.getBoundingClientRect();
+                    }
+                    if(!dino.holeA){    //The area for the gole
+                        dino.holeA = dino.querySelector("ellipse#Hole").getBoundingClientRect();
+                    }
+                    const matchA = dino.querySelector("g").getBoundingClientRect(); //The current location for the dino clickable
+                    const dinoA = dino.dinoA;
+                    const holeA = dino.holeA;
+
+                    //If the dinosaur is out enough from the hole
+                    const canWhack = (dinoA.top >= (matchA.top - holeA.height*1.20));
+                    //Wether we'll penalize the player for hitting too soon
+                    const penalize = true;
+
+                    if(!canWhack && !penalize){
+                        return;
+                    }
                     let pointsEl = dino.querySelector('.points');
 
                     if (dinoSVG.querySelector('#Horn').style.display === 'none') {
@@ -139,7 +159,18 @@ $(document).ready(function(){
                         dinoSVG.querySelector('#Eyes').style.display = 'none';
 
                         pointsEl.innerText = '60';
-                    } else {
+                    //If can't wack, penalize the player
+                    //with -20 points
+                    } else if(!canWhack){
+                        score = score - 20;
+
+                        score = Math.max(0, score);
+                        pointsEl.innerText = '-20';
+                        pointsEl.classList.add('points--red');
+
+                        shake();
+                    }
+                    else{
                         score = score - 20;
                         score = Math.max(0, score);
                         dinoSVG.querySelector('#AngryEyebrows').style.display = 'block';
@@ -164,20 +195,27 @@ $(document).ready(function(){
                 dinoSVG.addEventListener('touchend', whack);
             } else {
                 dinoSVG.addEventListener('click', whack);
+                /*
+                console.log({dinoSVG});
+                var event = document.createEvent("SVGEvents");
+                event.initEvent("click",true,true);
+                dinoSVG.dispatchEvent(event);
+                */
+                //return $("#Dino")[0].dispatchEvent(event);
             }
-
             dinosFrag.appendChild(dino);
             dinos.push(dino);
+            dinosSVGs.push(dinoSVG);
         }
 
         fieldEl.appendChild(dinosFrag);
         dinoOriginal.remove();
-
-        startEl.addEventListener('click', start);
+        //For web elements only
+        //startEl.addEventListener('click', start);
         loadStoredScore();
     }
 
-    function getDatabase(){
+    function getDatabase() {
         const _db = new Dexie("main");
         _db.version(1).stores({
             score: 'score,&id'
@@ -186,77 +224,77 @@ $(document).ready(function(){
         return _db;
     }
 
-    function getScoreStore(){
+    function getScoreStore() {
         return getDatabase()
-        .score;
+            .score;
     }
 
-    function getStoredScore(){
-        return new Promise((accept, reject)=>{
+    function getStoredScore() {
+        return new Promise((accept, reject) => {
             getScoreStore()
-            .get({
-                id:'main'
-            })
-            .then((data)=>{
-                accept(data ? data.score : 0);
-            })
-            .catch((err)=>{
-                reject(err);
-            });
-        });
-    }
-
-    function removeScore(){
-        return new Promise((accept, reject)=>{
-            getScoreStore()
-            .where('id')
-            .anyOf('main')
-            .delete()
-            .then((data)=>{
-                accept(data ? data.score : 0);
-            })
-            .catch((err)=>{
-                reject(err);
-            });
-        });
-    }
-
-    function updateStoredScore(score=0){
-        return new Promise((accept, reject)=>{
-            window._score = getDatabase().score;
-            removeScore()
-            .then(()=>{
-                getScoreStore()
-                .put({score, id:'main'})
-                .then((updated)=>{
-                    if(!updated){
-                        return reject("DID NOT UPDATE...");
-                    }
-                    return accept();
+                .get({
+                    id: 'main'
                 })
-                .catch((err)=>{
-                    console.log("Error putting score: ",{err});
+                .then((data) => {
+                    accept(data ? data.score : 0);
+                })
+                .catch((err) => {
                     reject(err);
                 });
-            })
-            .catch((err)=>{
-                console.log("Error removing score: ",{err});
-                reject(err);
-            });
+        });
+    }
+
+    function removeScore() {
+        return new Promise((accept, reject) => {
+            getScoreStore()
+                .where('id')
+                .anyOf('main')
+                .delete()
+                .then((data) => {
+                    accept(data ? data.score : 0);
+                })
+                .catch((err) => {
+                    reject(err);
+                });
+        });
+    }
+
+    function updateStoredScore(score = 0) {
+        return new Promise((accept, reject) => {
+            window._score = getDatabase().score;
+            removeScore()
+                .then(() => {
+                    getScoreStore()
+                        .put({ score, id: 'main' })
+                        .then((updated) => {
+                            if (!updated) {
+                                return reject("DID NOT UPDATE...");
+                            }
+                            return accept();
+                        })
+                        .catch((err) => {
+                            console.log("Error putting score: ", { err });
+                            reject(err);
+                        });
+                })
+                .catch((err) => {
+                    console.log("Error removing score: ", { err });
+                    reject(err);
+                });
         })
     }
 
     /**
      * @description Loads and sets-up the display for the score
      */
-    function loadStoredScore(){
+    function loadStoredScore() {
         getStoredScore()
-        .then((score)=>{
-            console.log({score});
-            highestScorelement.innerText = score;
-        }).catch((err)=>{
-            console.log("Error retrieving the score",err);
-        })
+            .then((score) => {
+                console.log({ score });
+                highestScorelement.innerText = score;
+            }).catch((err) => {
+                console.log("Error retrieving the score", err);
+            })
     }
 
     window.addEventListener('load', function () {
@@ -265,66 +303,88 @@ $(document).ready(function(){
     });
 
     let _isShowing = false;
-    function showLatestScore(latestScore=0){
-        if(_isShowing) return;
+    function showLatestScore(latestScore = 0) {
+        if (_isShowing) return;
         _isShowing = true;
         getStoredScore()
-        .then((storedScore)=>{
-            const _isNewHighScore = (score > storedScore);
-            let _panelElement = document.querySelector('.final-score-show');
-            if(!_panelElement.classList.contains('shown')){
-                _panelElement.classList.add('shown');
-                _panelElement.querySelector('.score-number').innerHTML = latestScore;
-            }
-            if(_isNewHighScore){
-                _panelElement.querySelector('.congrats-new-record').classList.add('shown');
-                return updateStoredScore(score);
-            }
-        })
-        .then((result)=>{
-            console.log("Updated score? ",{result});
-            return loadStoredScore();
-        })
-        .then(()=>{
-            console.log("Shown loaded score...");
-        })
-        .catch((err)=>{
-            console.log({err});
-            _isShowing = false;
-        });
+            .then((storedScore) => {
+                const _isNewHighScore = (score > storedScore);
+                let _panelElement = document.querySelector('.final-score-show');
+                if (!_panelElement.classList.contains('shown')) {
+                    _panelElement.classList.add('shown');
+                    _panelElement.querySelector('.score-number').innerHTML = latestScore;
+                }
+                if (_isNewHighScore) {
+                    _panelElement.querySelector('.congrats-new-record').classList.add('shown');
+                    return updateStoredScore(score);
+                }
+            })
+            .then((result) => {
+                console.log("Updated score? ", { result });
+                return loadStoredScore();
+            })
+            .then(() => {
+                console.log("Shown loaded score...");
+            })
+            .catch((err) => {
+                console.log({ err });
+                _isShowing = false;
+            });
     }
 
-    function hideLatestScore(){
+    function hideLatestScore() {
         _isShowing = false;
         let _panelElement = document.querySelector('.final-score-show.shown');
-        if(!_panelElement) return;
+        if (!_panelElement) return;
         _panelElement.classList.remove('shown');
         _panelElement.querySelector('.congrats-new-record').classList.remove('shown');
     }
 
-    $(".final-score-show").click(function(event){
+    $(".final-score-show").click(function (event) {
         hideLatestScore();
     });
 
-    //showLatestScore(20);
-    //console.log({'database':getDbScoreStore()})
-    /*
-    getStoredScore()
-    .then((data)=>{
-        console.log({data});
-    })
-    .catch((err)=>{
-        console.log({err});
+    $("#softkey > #center").click(function (event) {
+        start();
     });
-    */
+
+    document.addEventListener('keydown', function(evt){
+        if(evt.key === 'SoftLeft'){
     
-    /*
-    updateStoredScore(60)
-    .then((data)=>{
-        console.log({data});
+        }else if(evt.key === 'SoftRight'){
+    
+        }else if(evt.key === 'Enter'){
+            start();
+        }else{
+            //window.alert(`Entered a new key! ${evt.key}`);
+            /**3
+:   2
+1     3
+    5
+7      9
+    8
+             */
+            let _dinoSVG = null;
+            let _dinoMapping = {
+                '1':0,
+                '2':1,
+                '3':2,
+                '5':4,
+                '7':3,
+                '9':5,
+                '8':6
+            };
+            if(!isNaN(_dinoMapping[evt.key])){
+                _dinoSVG = dinosSVGs[_dinoMapping[evt.key]];
+            }
+            if(_dinoSVG){
+                //console.log({_dinoSVG});
+                var event = document.createEvent("SVGEvents");
+                event.initEvent("click",true,true);
+                _dinoSVG.dispatchEvent(event);
+            }else{
+                console.log("Didn't map");
+            }
+        }
     })
-    .catch((err)=>{
-        console.log({err});
-    });
-    //*/
 });
