@@ -72,7 +72,9 @@ $(document).ready(function () {
     }
 
     function init() {
+        console.log("init 1");
         for (let i = 0; i < max; i++) {
+            console.log("init 2");
             let dino = dinoOriginal.cloneNode(true);
             let dinoSVG = dino.querySelector('#Dino');
             let dir = [1, -1][Math.floor(Math.random() * 2)];
@@ -84,12 +86,15 @@ $(document).ready(function () {
             dinoSVG.style.animation = 'slowly-peeking 10s infinite';
             dinoSVG.style.animationDelay = (Math.random() * 5000) + 'ms';
 
+            console.log("init 3");
+
             dinoSVG.querySelector('#DeadEyes').style.display = 'none';
             dinoSVG.querySelector('#Tongue').style.display = 'none';
             dinoSVG.querySelector('#AngryEyebrows').style.display = 'none';
             dinoSVG.querySelector('#TopHat').style.display = 'none';
             dinoSVG.querySelector('#Monocle').style.display = 'none';
 
+            console.log("init 4");
             if (showHorn) {
                 dinoSVG.querySelector('#Horn').style.display = 'block';
             } else {
@@ -101,7 +106,7 @@ $(document).ready(function () {
                 dinoSVG.querySelector('#Monocle').style.display = 'block';
                 dinoSVG.querySelector('#Horn').style.display = 'none';
             }
-
+            console.log("init 5");
             dino.addEventListener('animationiteration', function (ev) {
                 let dir = [1, -1][Math.floor(Math.random() * 2)];
                 let showHorn = (Math.random() * 10) > 5;
@@ -128,24 +133,25 @@ $(document).ready(function () {
                     dinoSVG.querySelector('#Horn').style.display = 'none';
                 }
             });
-
+            console.log("init 6");
             function whack(ev) {
+
+                if(!dino.dinoA){    //The bounding box area for the dino
+                    dino.dinoA = dino.getBoundingClientRect();
+                }
+                if(!dino.holeA){    //The area for the gole
+                    dino.holeA = dino.querySelector("ellipse#Hole").getBoundingClientRect();
+                }
+                const matchA = dino.querySelector("g").getBoundingClientRect(); //The current location for the dino clickable
+                const dinoA = dino.dinoA;
+                const holeA = dino.holeA;
+                const canWhack = (dinoA.top >= (matchA.top - holeA.height*1.20));
+
                 if (isRunning) {
 
-                    if(!dino.dinoA){    //The bounding box area for the dino
-                        dino.dinoA = dino.getBoundingClientRect();
-                    }
-                    if(!dino.holeA){    //The area for the gole
-                        dino.holeA = dino.querySelector("ellipse#Hole").getBoundingClientRect();
-                    }
-                    const matchA = dino.querySelector("g").getBoundingClientRect(); //The current location for the dino clickable
-                    const dinoA = dino.dinoA;
-                    const holeA = dino.holeA;
-
                     //If the dinosaur is out enough from the hole
-                    const canWhack = (dinoA.top >= (matchA.top - holeA.height*1.20));
                     //Wether we'll penalize the player for hitting too soon
-                    const penalize = true;
+                    const penalize = false;
 
                     if(!canWhack && !penalize){
                         return;
@@ -190,19 +196,13 @@ $(document).ready(function () {
                     scoreEl.innerText = score;
                 }
             }
-
+            console.log("init 7");
             if (isTouch) {
                 dinoSVG.addEventListener('touchend', whack);
             } else {
                 dinoSVG.addEventListener('click', whack);
-                /*
-                console.log({dinoSVG});
-                var event = document.createEvent("SVGEvents");
-                event.initEvent("click",true,true);
-                dinoSVG.dispatchEvent(event);
-                */
-                //return $("#Dino")[0].dispatchEvent(event);
             }
+            console.log("init 8");
             dinosFrag.appendChild(dino);
             dinos.push(dino);
             dinosSVGs.push(dinoSVG);
@@ -297,9 +297,13 @@ $(document).ready(function () {
             })
     }
 
-    window.addEventListener('load', function () {
+    $(document).ready(function(){
         isTouch = document.querySelector('html').classList.contains('touch');
-        init();
+        try{
+            init();
+        }catch(e){
+            window.alert("Error initializing!");
+        }
     });
 
     let _isShowing = false;

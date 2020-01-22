@@ -1,10 +1,16 @@
 html,
 body {
+    /*
+    KaiOS-specific adjustments
     height: 100%;
-  /*KaiOS-specific adjustments*/
     padding: 0em;
     padding-top: 5px;
     margin: 0px;
+    */
+}
+
+header {
+    padding-bottom: 10vh;
 }
 
 body {
@@ -31,7 +37,7 @@ body {
 .title {
   font-family: Modak, sans-serif;
   color: #ff8c00;
-  font-size: 36px;
+  font-size: 1.2rem;
   letter-spacing: 2px;
   text-shadow: 1px 1px rgb(123, 67, 0);
   text-transform: uppercase;
@@ -41,7 +47,8 @@ body {
   width: 100%;
   text-align: center;
   color: #fff;
-  font-size: 18px;
+  font-size: 12px;
+  font-weight: bold;
   display: flex;
   justify-content: space-around;
 }
@@ -109,14 +116,14 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 110px;
+  height: 20vh;
   position: relative;
 }
 
 .dino:nth-child(3n),
 .dino:nth-child(3n + 1) {
   position: relative;
-  top: 60px;
+  top: 10vh;
 }
 
 .dino:last-child {
@@ -273,4 +280,8 @@ svg {
 #softkey * {
     color: white;
     font-weight: bolder;
+}
+
+.scoreboard .info {
+    margin: 5px;
 }
