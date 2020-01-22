@@ -72,68 +72,65 @@ $(document).ready(function () {
     }
 
     function init() {
-        console.log("init 1");
-        for (let i = 0; i < max; i++) {
-            console.log("init 2");
-            let dino = dinoOriginal.cloneNode(true);
-            let dinoSVG = dino.querySelector('#Dino');
+        function animate(dino, dinoSVG){
+            //We choose a random direction
             let dir = [1, -1][Math.floor(Math.random() * 2)];
+            //We randomly choose to show the horn or not
             let showHorn = (Math.random() * 10) > 5;
+            //We randomly choose if it's a gentleman or nor
             let isGentleman = (Math.random() * 10) > 9;
 
+            //We set the transform style to scaleX
             dino.querySelector('svg').style.transform = `scaleX(${dir})`;
 
+            //We set the style animation for the template
             dinoSVG.style.animation = 'slowly-peeking 10s infinite';
+            
+            //We set a random animation delay between 0 and 5 seconds
             dinoSVG.style.animationDelay = (Math.random() * 5000) + 'ms';
 
-            console.log("init 3");
 
-            dinoSVG.querySelector('#DeadEyes').style.display = 'none';
-            dinoSVG.querySelector('#Tongue').style.display = 'none';
-            dinoSVG.querySelector('#AngryEyebrows').style.display = 'none';
-            dinoSVG.querySelector('#TopHat').style.display = 'none';
-            dinoSVG.querySelector('#Monocle').style.display = 'none';
+            dinoSVG.querySelector('#DeadEyes').style.display = 'none';      //We hide the eyes
+            dinoSVG.querySelector('#Tongue').style.display = 'none';        //We hide the tongue
+            dinoSVG.querySelector('#AngryEyebrows').style.display = 'none'; //We hide the eyebrowns
+            dinoSVG.querySelector('#TopHat').style.display = 'none';        //We hide the tophat
+            dinoSVG.querySelector('#Monocle').style.display = 'none';       //We hide the monocle
 
-            console.log("init 4");
             if (showHorn) {
-                dinoSVG.querySelector('#Horn').style.display = 'block';
+                dinoSVG.querySelector('#Horn').style.display = 'block';     //If should show horn, display it
             } else {
-                dinoSVG.querySelector('#Horn').style.display = 'none';
+                dinoSVG.querySelector('#Horn').style.display = 'none';      //Else, hide it
             }
 
-            if (isGentleman) {
-                dinoSVG.querySelector('#TopHat').style.display = 'block';
-                dinoSVG.querySelector('#Monocle').style.display = 'block';
-                dinoSVG.querySelector('#Horn').style.display = 'none';
+            if (isGentleman) {                                              //If it's a gentleman
+                dinoSVG.querySelector('#TopHat').style.display = 'block';   //+We show the top-hat
+                dinoSVG.querySelector('#Monocle').style.display = 'block';  //+We show the monocle
+                dinoSVG.querySelector('#Horn').style.display = 'none';      //+We show the horn
             }
-            console.log("init 5");
+        }
+
+        let TRs = [document.querySelector('#field-placeholder-tr')];
+        TRs = [];
+        let currentTrIndex = 0;
+        let originalTrPLaceholder = document.querySelector('#field-placeholder-tr');
+        for (let i = 0; i < max; i++) {
+            if(i % 3 == 0){
+                TRs.push(originalTrPLaceholder.cloneNode());
+                currentTrIndex = (i/3);
+            }
+            
+            //We clone the original TD
+            let dino = dinoOriginal.cloneNode(true);
+            //We get the SVG inside the cloned TD
+            let dinoSVG = dino.querySelector('#Dino');
+            
+            animate(dino, dinoSVG); //We animate initially
+            
             dino.addEventListener('animationiteration', function (ev) {
-                let dir = [1, -1][Math.floor(Math.random() * 2)];
-                let showHorn = (Math.random() * 10) > 5;
-                let isGentleman = (Math.random() * 10) > 9;
-
-                dino.querySelector('svg').style.transform = `scaleX(${dir})`;
-
-                dinoSVG.querySelector('#DeadEyes').style.display = 'none';
-                dinoSVG.querySelector('#Tongue').style.display = 'none';
-                dinoSVG.querySelector('#AngryEyebrows').style.display = 'none';
-                dinoSVG.querySelector('#Eyes').style.display = 'block';
-                dinoSVG.querySelector('#TopHat').style.display = 'none';
-                dinoSVG.querySelector('#Monocle').style.display = 'none';
-
-                if (showHorn) {
-                    dinoSVG.querySelector('#Horn').style.display = 'block';
-                } else {
-                    dinoSVG.querySelector('#Horn').style.display = 'none';
-                }
-
-                if (isGentleman) {
-                    dinoSVG.querySelector('#TopHat').style.display = 'block';
-                    dinoSVG.querySelector('#Monocle').style.display = 'block';
-                    dinoSVG.querySelector('#Horn').style.display = 'none';
-                }
+                animate(dino, dinoSVG); //Everytime the animation loops to start, we animate again
             });
-            console.log("init 6");
+
+            //Whack the dino
             function whack(ev) {
 
                 if(!dino.dinoA){    //The bounding box area for the dino
@@ -145,74 +142,72 @@ $(document).ready(function () {
                 const matchA = dino.querySelector("g").getBoundingClientRect(); //The current location for the dino clickable
                 const dinoA = dino.dinoA;
                 const holeA = dino.holeA;
+
+                //If the dinosaur is out enough from the hole
                 const canWhack = (dinoA.top >= (matchA.top - holeA.height*1.20));
 
                 if (isRunning) {
-
-                    //If the dinosaur is out enough from the hole
                     //Wether we'll penalize the player for hitting too soon
                     const penalize = false;
 
-                    if(!canWhack && !penalize){
+                    if(!canWhack && !penalize){ //If can't wack and can't penalize
                         return;
                     }
-                    let pointsEl = dino.querySelector('.points');
+                    let pointsEl = dino.querySelector('.points');   //We select the point element inside the dino
 
-                    if (dinoSVG.querySelector('#Horn').style.display === 'none') {
-                        score = score + 60;
-                        dinoSVG.querySelector('#DeadEyes').style.display = 'block';
-                        dinoSVG.querySelector('#Tongue').style.display = 'block';
-                        dinoSVG.querySelector('#Eyes').style.display = 'none';
+                    if (dinoSVG.querySelector('#Horn').style.display === 'none') {  //If the horn is hidden
+                        score = score + 60;                                         //+augment the score to +30
+                        dinoSVG.querySelector('#DeadEyes').style.display = 'block'; //+Show dead eyes
+                        dinoSVG.querySelector('#Tongue').style.display = 'block';   //+Show tonge
+                        dinoSVG.querySelector('#Eyes').style.display = 'none';      //+hide eyes
 
-                        pointsEl.innerText = '60';
-                    //If can't wack, penalize the player
-                    //with -20 points
-                    } else if(!canWhack){
-                        score = score - 20;
+                        pointsEl.innerText = '60';                                  //+Set the points inner text with 60
+                    } else if(!canWhack){                                           //If we can't penalize the player
+                        score = score - 20;                                         //Reduce score by 20
 
-                        score = Math.max(0, score);
-                        pointsEl.innerText = '-20';
-                        pointsEl.classList.add('points--red');
+                        score = Math.max(0, score);                                 //Set the max. score
+                        pointsEl.innerText = '-20';                                 //Set the score text
+                        pointsEl.classList.add('points--red');                      //Set the points to red
 
                         shake();
                     }
-                    else{
-                        score = score - 20;
-                        score = Math.max(0, score);
-                        dinoSVG.querySelector('#AngryEyebrows').style.display = 'block';
+                    else{                                                                   
+                        score = score - 20;                                             //Reduce score by 20
+                        score = Math.max(0, score);                                     //Set the max. score
+                        dinoSVG.querySelector('#AngryEyebrows').style.display = 'block';//Show angry eyes
+                        pointsEl.innerText = '-20';                                     //Set the score text
+                        pointsEl.classList.add('points--red');                          //Set the points to red
 
-                        pointsEl.innerText = '-20';
-                        pointsEl.classList.add('points--red');
-
-                        shake();
+                        shake();                                                        //Shake
                     }
 
-                    pointsEl.classList.add('fadeUp');
-                    pointsEl.addEventListener('animationend', () => {
-                        pointsEl.classList.remove('fadeUp');
-                        pointsEl.classList.remove('points--red');
+                    pointsEl.classList.add('fadeUp');                                   //Fade the element
+                    pointsEl.addEventListener('animationend', () => {                   //When animation fadeUp has ended
+                        pointsEl.classList.remove('fadeUp');                            //Remove class fadeUp
+                        pointsEl.classList.remove('points--red');                       //Remove red text, if any
                     });
 
-                    scoreEl.innerText = score;
+                    scoreEl.innerText = score;                                          //Set the inner text score to the new score
                 }
             }
-            console.log("init 7");
-            if (isTouch) {
-                dinoSVG.addEventListener('touchend', whack);
-            } else {
-                dinoSVG.addEventListener('click', whack);
+            
+            if (isTouch) {                                                              //If device is touch
+                dinoSVG.addEventListener('touchend', whack);                            //+Set the touch-end event to whack
+            } else {                                                                    //Else
+                dinoSVG.addEventListener('click', whack);                               //+Set the click event to whack
             }
-            console.log("init 8");
-            dinosFrag.appendChild(dino);
-            dinos.push(dino);
-            dinosSVGs.push(dinoSVG);
+            TRs[currentTrIndex].appendChild(dino);
+            //dinosFrag.appendChild(dino);                                                //We append the dino to the dinosFrag
+            dinos.push(dino);                                                           //We push the dinos into the dino array
+            dinosSVGs.push(dinoSVG);                                                    //We push the dino SVG into the dino SVG array
         }
 
-        fieldEl.appendChild(dinosFrag);
-        dinoOriginal.remove();
-        //For web elements only
-        //startEl.addEventListener('click', start);
-        loadStoredScore();
+        for(let element of TRs){
+            fieldEl.parentNode.appendChild(element);
+        }
+        //fieldEl.appendChild(dinosFrag);                                                 //We attach the fragment to the field element
+        dinoOriginal.parentNode.remove();                                                          //We remove the dino-original fragment
+        loadStoredScore();                                                           //We load the score
     }
 
     function getDatabase() {

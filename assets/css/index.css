@@ -106,16 +106,12 @@ body {
   margin: auto;
   position: relative;
   top: -30px;
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
   justify-content: center;
   align-content: center;
 }
 
 .dino {
-  display: flex;
   justify-content: center;
-  align-items: center;
   height: 20vh;
   position: relative;
 }
