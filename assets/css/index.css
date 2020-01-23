@@ -1,6 +1,6 @@
 html,
 body {
-    /*
+  /*
     KaiOS-specific adjustments
     height: 100%;
     padding: 0em;
@@ -10,7 +10,7 @@ body {
 }
 
 header {
-    padding-bottom: 10vh;
+  /*padding-bottom: 10vh;*/
 }
 
 body {
@@ -36,6 +36,8 @@ body {
 
 .title {
   font-family: Modak, sans-serif;
+  font-weight: bold;
+  text-align: center;
   color: #ff8c00;
   font-size: 1.2rem;
   letter-spacing: 2px;
@@ -105,19 +107,16 @@ body {
   max-width: 360px;
   margin: auto;
   position: relative;
-  top: -30px;
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
   justify-content: center;
   align-content: center;
+  text-align: center;
 }
 
 .dino {
-  display: flex;
   justify-content: center;
-  align-items: center;
   height: 20vh;
   position: relative;
+  display: inline-block;
 }
 
 .dino:nth-child(3n),
@@ -237,51 +236,51 @@ svg {
 }
 
 .final-score-show {
-    display: none;
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    align-items: center;
-    justify-content: center;
-    z-index: 300;
+  display: none;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+  z-index: 300;
 }
 
 .final-score-show > div {
-    background: rgba(255,140,0,.60);
-    border-radius: 10px;
-    padding: 2em;
-    width: 60%;
-    color: white;
+  background: rgba(255, 140, 0, 0.6);
+  border-radius: 10px;
+  padding: 2em;
+  width: 60%;
+  color: white;
 }
 
 .final-score-show.shown {
-    display: flex;
+  display: flex;
 }
 
 .congrats-new-record {
-    display: none;
+  display: none;
 }
 
 .congrats-new-record.shown {
-    display: inherit;
+  display: inherit;
 }
 
 /*KaiOS-specific adjustments*/
 .game {
-    padding: 0px;
+  padding: 0px;
 }
 
 #softkey {
-    background: rgb(216, 69, 1);
-    border-top: 2px #cbcbcb solid;
-    height: 30px;
+  background: rgb(216, 69, 1);
+  border-top: 2px #cbcbcb solid;
+  height: 30px;
 }
 
 #softkey * {
-    color: white;
-    font-weight: bolder;
+  color: white;
+  font-weight: bolder;
 }
 
 .scoreboard .info {
-    margin: 5px;
+  margin: 5px;
 }

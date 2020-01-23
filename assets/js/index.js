@@ -38,7 +38,7 @@ $(document).ready(function () {
     }
 
     function start() {
-        if(isRunning) return;
+        if (isRunning) return;
         for (let i = 0; i < dinos.length; i++) {
             let dinoSVG = dinos[i].querySelector('#Dino');
             dinoSVG.style.transform = 'translateY(80%)';
@@ -72,29 +72,21 @@ $(document).ready(function () {
     }
 
     function init() {
-        console.log("init 1");
-        for (let i = 0; i < max; i++) {
-            console.log("init 2");
-            let dino = dinoOriginal.cloneNode(true);
-            let dinoSVG = dino.querySelector('#Dino');
-            let dir = [1, -1][Math.floor(Math.random() * 2)];
-            let showHorn = (Math.random() * 10) > 5;
-            let isGentleman = (Math.random() * 10) > 9;
+
+        function animate(dino, dinoSVG) {
+            const dir = [1, -1][Math.floor(Math.random() * 2)];
+            const showHorn = (Math.random() * 10) > 5;
+            const isGentleman = (Math.random() * 10) > 9;
 
             dino.querySelector('svg').style.transform = `scaleX(${dir})`;
-
-            dinoSVG.style.animation = 'slowly-peeking 10s infinite';
-            dinoSVG.style.animationDelay = (Math.random() * 5000) + 'ms';
-
-            console.log("init 3");
 
             dinoSVG.querySelector('#DeadEyes').style.display = 'none';
             dinoSVG.querySelector('#Tongue').style.display = 'none';
             dinoSVG.querySelector('#AngryEyebrows').style.display = 'none';
+            dinoSVG.querySelector('#Eyes').style.display = 'block';
             dinoSVG.querySelector('#TopHat').style.display = 'none';
             dinoSVG.querySelector('#Monocle').style.display = 'none';
 
-            console.log("init 4");
             if (showHorn) {
                 dinoSVG.querySelector('#Horn').style.display = 'block';
             } else {
@@ -106,54 +98,91 @@ $(document).ready(function () {
                 dinoSVG.querySelector('#Monocle').style.display = 'block';
                 dinoSVG.querySelector('#Horn').style.display = 'none';
             }
-            console.log("init 5");
+        }
+
+        function setAnimation(dino, dinoSVG) {
+            const dir = [1, -1][Math.floor(Math.random() * 2)];
+            const showHorn = (Math.random() * 10) > 5;
+            const isGentleman = (Math.random() * 10) > 9;
+
+            dino.querySelector('svg').style.transform = `scaleX(${dir})`;
+
+            dinoSVG.style.animation = 'slowly-peeking 10s infinite';
+            dinoSVG.style.animationDelay = (Math.random() * 5000) + 'ms';
+
+
+            dinoSVG.querySelector('#DeadEyes').style.display = 'none';
+            dinoSVG.querySelector('#Tongue').style.display = 'none';
+            dinoSVG.querySelector('#AngryEyebrows').style.display = 'none';
+            dinoSVG.querySelector('#TopHat').style.display = 'none';
+            dinoSVG.querySelector('#Monocle').style.display = 'none';
+
+            if (showHorn) {
+                dinoSVG.querySelector('#Horn').style.display = 'block';
+            } else {
+                dinoSVG.querySelector('#Horn').style.display = 'none';
+            }
+
+            if (isGentleman) {
+                dinoSVG.querySelector('#TopHat').style.display = 'block';
+                dinoSVG.querySelector('#Monocle').style.display = 'block';
+                dinoSVG.querySelector('#Horn').style.display = 'none';
+            }
+        }
+
+        function canWhackDino(dino = document.querySelector("#55")) {
+            dino.dinoA = dino.getBoundingClientRect();
+            dino.holeA = dino.querySelector("ellipse#Hole").getBoundingClientRect();
+
+            const matchA = dino.querySelector("g").getBoundingClientRect(); //The current location for the dino clickable
+            const dinoA = dino.dinoA;
+            const holeA = dino.holeA;
+            const canWhack = (dinoA.top >= (matchA.top - holeA.height * 1.20));
+
+
+            console.log(JSON.stringify({
+                matchA: {
+                    top: matchA.top,
+                    bottom: matchA.bottom,
+                    width: matchA.width,
+                    height: matchA.height,
+                    x: matchA.x,
+                    y: matchA.y,
+                }, dinoA: {
+                    top: dinoA.top,
+                    bottom: dinoA.bottom,
+                    width: dinoA.width,
+                    height: dinoA.height,
+                    x: dinoA.x,
+                    y: dinoA.y,
+                }, holeA: {
+                    top: holeA.top,
+                    bottom: holeA.bottom,
+                    width: holeA.width,
+                    height: holeA.height,
+                    x: holeA.x,
+                    y: holeA.y,
+                }, canWhack
+            }));
+            return canWhack;
+        }
+
+        for (let i = 0; i < max; i++) {
+            let dino = dinoOriginal.cloneNode(true);
+            let dinoSVG = dino.querySelector('#Dino');
+            setAnimation(dino, dinoSVG);
             dino.addEventListener('animationiteration', function (ev) {
-                let dir = [1, -1][Math.floor(Math.random() * 2)];
-                let showHorn = (Math.random() * 10) > 5;
-                let isGentleman = (Math.random() * 10) > 9;
-
-                dino.querySelector('svg').style.transform = `scaleX(${dir})`;
-
-                dinoSVG.querySelector('#DeadEyes').style.display = 'none';
-                dinoSVG.querySelector('#Tongue').style.display = 'none';
-                dinoSVG.querySelector('#AngryEyebrows').style.display = 'none';
-                dinoSVG.querySelector('#Eyes').style.display = 'block';
-                dinoSVG.querySelector('#TopHat').style.display = 'none';
-                dinoSVG.querySelector('#Monocle').style.display = 'none';
-
-                if (showHorn) {
-                    dinoSVG.querySelector('#Horn').style.display = 'block';
-                } else {
-                    dinoSVG.querySelector('#Horn').style.display = 'none';
-                }
-
-                if (isGentleman) {
-                    dinoSVG.querySelector('#TopHat').style.display = 'block';
-                    dinoSVG.querySelector('#Monocle').style.display = 'block';
-                    dinoSVG.querySelector('#Horn').style.display = 'none';
-                }
+                animate(dino, dinoSVG);
             });
-            console.log("init 6");
             function whack(ev) {
-
-                if(!dino.dinoA){    //The bounding box area for the dino
-                    dino.dinoA = dino.getBoundingClientRect();
-                }
-                if(!dino.holeA){    //The area for the gole
-                    dino.holeA = dino.querySelector("ellipse#Hole").getBoundingClientRect();
-                }
-                const matchA = dino.querySelector("g").getBoundingClientRect(); //The current location for the dino clickable
-                const dinoA = dino.dinoA;
-                const holeA = dino.holeA;
-                const canWhack = (dinoA.top >= (matchA.top - holeA.height*1.20));
-
+                const canWhack = canWhackDino(dino);
                 if (isRunning) {
 
                     //If the dinosaur is out enough from the hole
                     //Wether we'll penalize the player for hitting too soon
                     const penalize = false;
 
-                    if(!canWhack && !penalize){
+                    if (!canWhack && !penalize) {
                         return;
                     }
                     let pointsEl = dino.querySelector('.points');
@@ -165,9 +194,9 @@ $(document).ready(function () {
                         dinoSVG.querySelector('#Eyes').style.display = 'none';
 
                         pointsEl.innerText = '60';
-                    //If can't wack, penalize the player
-                    //with -20 points
-                    } else if(!canWhack){
+                        //If can't wack, penalize the player
+                        //with -20 points
+                    } else if (!canWhack) {
                         score = score - 20;
 
                         score = Math.max(0, score);
@@ -176,7 +205,7 @@ $(document).ready(function () {
 
                         shake();
                     }
-                    else{
+                    else {
                         score = score - 20;
                         score = Math.max(0, score);
                         dinoSVG.querySelector('#AngryEyebrows').style.display = 'block';
@@ -196,13 +225,12 @@ $(document).ready(function () {
                     scoreEl.innerText = score;
                 }
             }
-            console.log("init 7");
+
             if (isTouch) {
                 dinoSVG.addEventListener('touchend', whack);
             } else {
                 dinoSVG.addEventListener('click', whack);
             }
-            console.log("init 8");
             dinosFrag.appendChild(dino);
             dinos.push(dino);
             dinosSVGs.push(dinoSVG);
@@ -297,12 +325,13 @@ $(document).ready(function () {
             })
     }
 
-    $(document).ready(function(){
+    $(document).ready(function () {
         isTouch = document.querySelector('html').classList.contains('touch');
-        try{
+        try {
             init();
-        }catch(e){
+        } catch (e) {
             window.alert("Error initializing!");
+            console.log({ e });
         }
     });
 
@@ -352,15 +381,14 @@ $(document).ready(function () {
         start();
     });
 
-    document.addEventListener('keydown', function(evt){
-        if(evt.key === 'SoftLeft'){
-    
-        }else if(evt.key === 'SoftRight'){
-    
-        }else if(evt.key === 'Enter'){
+    document.addEventListener('keydown', function (evt) {
+        if (evt.key === 'SoftLeft') {
+
+        } else if (evt.key === 'SoftRight') {
+
+        } else if (evt.key === 'Enter') {
             start();
-        }else{
-            //window.alert(`Entered a new key! ${evt.key}`);
+        } else {
             /**3
 :   2
 1     3
@@ -370,23 +398,23 @@ $(document).ready(function () {
              */
             let _dinoSVG = null;
             let _dinoMapping = {
-                '1':0,
-                '2':1,
-                '3':2,
-                '5':4,
-                '7':3,
-                '9':5,
-                '8':6
+                '1': 0,
+                '2': 1,
+                '3': 2,
+                '5': 4,
+                '7': 3,
+                '9': 5,
+                '8': 6
             };
-            if(!isNaN(_dinoMapping[evt.key])){
+            if (!isNaN(_dinoMapping[evt.key])) {
                 _dinoSVG = dinosSVGs[_dinoMapping[evt.key]];
             }
-            if(_dinoSVG){
+            if (_dinoSVG) {
                 //console.log({_dinoSVG});
                 var event = document.createEvent("SVGEvents");
-                event.initEvent("click",true,true);
+                event.initEvent("click", true, true);
                 _dinoSVG.dispatchEvent(event);
-            }else{
+            } else {
                 console.log("Didn't map");
             }
         }
