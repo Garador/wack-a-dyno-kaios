@@ -10,7 +10,7 @@ body {
 }
 
 header {
-    padding-bottom: 10vh;
+    /*padding-bottom: 10vh;*/
 }
 
 body {
@@ -105,15 +105,16 @@ body {
   max-width: 360px;
   margin: auto;
   position: relative;
-  top: -30px;
   justify-content: center;
   align-content: center;
+  text-align: center;
 }
 
 .dino {
   justify-content: center;
   height: 20vh;
   position: relative;
+  display: inline-block;
 }
 
 .dino:nth-child(3n),
