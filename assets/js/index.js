@@ -131,40 +131,10 @@ $(document).ready(function () {
         }
 
         function canWhackDino(dino = document.querySelector("#55")) {
-            dino.dinoA = dino.getBoundingClientRect();
-            dino.holeA = dino.querySelector("ellipse#Hole").getBoundingClientRect();
-
-            const matchA = dino.querySelector("g").getBoundingClientRect(); //The current location for the dino clickable
-            const dinoA = dino.dinoA;
-            const holeA = dino.holeA;
-            const canWhack = (dinoA.top >= (matchA.top - holeA.height * 1.20));
-
-
-            console.log(JSON.stringify({
-                matchA: {
-                    top: matchA.top,
-                    bottom: matchA.bottom,
-                    width: matchA.width,
-                    height: matchA.height,
-                    x: matchA.x,
-                    y: matchA.y,
-                }, dinoA: {
-                    top: dinoA.top,
-                    bottom: dinoA.bottom,
-                    width: dinoA.width,
-                    height: dinoA.height,
-                    x: dinoA.x,
-                    y: dinoA.y,
-                }, holeA: {
-                    top: holeA.top,
-                    bottom: holeA.bottom,
-                    width: holeA.width,
-                    height: holeA.height,
-                    x: holeA.x,
-                    y: holeA.y,
-                }, canWhack
-            }));
-            return canWhack;
+            if(!dino.holeA){
+                dino.holeA = dino.querySelector("ellipse#Hole").getBoundingClientRect();
+            }
+            return (document.elementFromPoint(dino.holeA.x, dino.holeA.y-30).id === 'Rectangle');
         }
 
         for (let i = 0; i < max; i++) {
@@ -175,9 +145,8 @@ $(document).ready(function () {
                 animate(dino, dinoSVG);
             });
             function whack(ev) {
-                const canWhack = canWhackDino(dino);
                 if (isRunning) {
-
+                    const canWhack = canWhackDino(dino);
                     //If the dinosaur is out enough from the hole
                     //Wether we'll penalize the player for hitting too soon
                     const penalize = false;
