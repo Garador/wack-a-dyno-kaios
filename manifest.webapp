@@ -13,7 +13,8 @@
   "launch_path": "/index.html",
   "icons": {
     "56": "/icons/icon56x56.png",
-    "112": "/icons/icon112x112.png"
+    "112": "/icons/icon112x112.png",
+    "128": "/icons/icon128x128.png"
   },
   "theme_color": "#d46911",
   "default_locale": "en-US",
