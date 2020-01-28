@@ -12,5 +12,5 @@ body {
 .option.focused {
     font-weight: bolder;
     font-size: 120%;
-    border-color: rgb(64, 226, 43);
+    border:blue;
 }

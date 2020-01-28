@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wack-a-Dino</title>
+    <link rel="stylesheet" href="assets/css/softkey.css">
+    <link rel="stylesheet" href="assets/css/game.css">
+    <script type="text/javascript" src="assets/js/jquery-3.4.1.slim.min.js"></script>
+    <script type="text/javascript" src="assets/js/dexie.min.js"></script>
+    <script type="text/javascript" src="assets/js/score.js"></script>
+    <script type="text/javascript" src="assets/js/game.js"></script>
+</head>
+
+<body>
+    <div class="game">
+        <header>
+            <div class="title">Whack a Dino!</div>
+
+            <div class="scoreboard">
+                <div class="info">Score: <span class="score">0</span></div>
+                <div class="info">Highest: <span class="highest-score">0</span></div>
+                <div class="info">Time: <span class="time">60</span>s</div>
+                <div class="final-score-show">
+                    <div>
+                        <h3>You scored</h3>
+                        <h2 class="score-number">30</h2>
+                        <b class="congrats-new-record" id="">New high record!</b>
+                        <img id="winning-dino" src="assets/img/dino1.png" style="width: 60%;padding-top: 1em;" class="result-dino no-display">
+                        <img id="stunned-dino" src="assets/img/dino2.png" style="width: 60%;padding-top: 1em;" class="result-dino no-display">
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <div class="field">
+            <div class="dino dino--original">
+                <div class="points">100</div>
+                <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+                    style="isolation:isolate" viewBox="158.22 300.71 109.78 106.41" width="64" height="64">
+                    <clipPath id="_clipPath_iyFpZlomJkfyPxMy5FoWrjPUsTxfrOtl">
+                        <path
+                            d=" M 178.312 390.733 Q 171.834 390.756 158.355 390.818 L 158.22 300.71 L 267.759 300.71 L 268 390.818 L 247.86 390.728 C 247.759 399.508 232.844 407.191 213.092 407.12 C 196.053 407.058 178.797 401.189 178.312 390.733 Z "
+                            id="PeekingDino_2" fill="rgb(255,255,255)" />
+                    </clipPath>
+                    <g clip-path="url(#_clipPath_iyFpZlomJkfyPxMy5FoWrjPUsTxfrOtl)">
+                        <ellipse vector-effect="non-scaling-stroke" cx="213.1098590741296" cy="390.81926107003596"
+                            rx="34.697922494492445" ry="16.319261070035964" id="Hole" fill="rgb(93,93,93)" />
+                        <clipPath id="_clipPath_c8QjgyLlDC94cLkhLSUMTysbC6Mandia">
+                            <ellipse vector-effect="non-scaling-stroke" cx="213.1098590741296" cy="390.81926107003596"
+                                rx="34.697922494492445" ry="16.319261070035964" id="Hole" fill="rgb(93,93,93)" />
+                        </clipPath>
+                        <g clip-path="url(#_clipPath_c8QjgyLlDC94cLkhLSUMTysbC6Mandia)">
+                            <ellipse vector-effect="non-scaling-stroke" cx="213.1098590741296" cy="394.1380159686848"
+                                rx="34.29522846510352" ry="16.129864457083556" id="Hole" fill="rgb(66,66,66)" />
+                        </g>
+                        <g id="Dino">
+                            <path
+                                d=" M 190.327 384.232 Q 186.998 388.948 187.29 390.208 C 187.582 391.467 188.151 392.021 188.974 392.366 C 189.797 392.71 191.038 392.77 191.88 392.42 Q 192.722 392.069 194.671 386.471 L 190.327 384.232 Z "
+                                id="Tongue" fill="rgb(238,81,76)" />
+                            <path
+                                d=" M 214.125 389.974 C 207.37 390.312 197.102 389.435 193.051 387.694 C 189 385.952 185.97 383.401 186.005 379.4 C 186.04 375.399 187.605 373.809 190.296 371.564 Q 192.987 369.319 201.851 365.854 Q 205.274 350.138 217.354 350.886 C 225.398 351.384 230.929 356.109 233.406 363.676 Q 235.884 371.243 236.811 384.884 L 239.127 441.617 L 215.28 444.213 Q 214.732 389.944 214.125 389.974 Z "
+                                id="Path" fill="rgb(216,69,1)" />
+                            <g id="Eyes">
+                                <ellipse vector-effect="non-scaling-stroke" cx="204.3797819812316"
+                                    cy="368.16127867739544" rx="2.8239805295291376" ry="2.626211886374506" id="Ellipse"
+                                    fill="rgb(0,0,0)" />
+                                <ellipse vector-effect="non-scaling-stroke" cx="212.10226315782975"
+                                    cy="370.66722008910335" rx="2.8239805295291376" ry="2.626211886374506" id="Ellipse"
+                                    fill="rgb(0,0,0)" />
+                            </g>
+                            <g id="DeadEyes">
+                                <g id="Group">
+                                    <line x1="209.67" y1="373.026" x2="214.422" y2="368.251" id="Path"
+                                        vector-effect="non-scaling-stroke" stroke-width="1.8" stroke="rgb(0,0,0)"
+                                        stroke-linejoin="miter" stroke-linecap="square" stroke-miterlimit="3" />
+                                    <line x1="209.67" y1="368.251" x2="214.422" y2="373.026" id="Path"
+                                        vector-effect="non-scaling-stroke" stroke-width="1.8" stroke="rgb(0,0,0)"
+                                        stroke-linejoin="miter" stroke-linecap="square" stroke-miterlimit="3" />
+                                </g>
+                                <g id="Group">
+                                    <line x1="201.911" y1="370.345" x2="206.662" y2="365.57" id="Path"
+                                        vector-effect="non-scaling-stroke" stroke-width="1.8" stroke="rgb(0,0,0)"
+                                        stroke-linejoin="miter" stroke-linecap="square" stroke-miterlimit="3" />
+                                    <line x1="201.911" y1="365.57" x2="206.662" y2="370.345" id="Path"
+                                        vector-effect="non-scaling-stroke" stroke-width="1.8" stroke="rgb(0,0,0)"
+                                        stroke-linejoin="miter" stroke-linecap="square" stroke-miterlimit="3" />
+                                </g>
+                            </g>
+                            <g id="Nose">
+                                <g opacity="0.43" style="mix-blend-mode:multiply;">
+                                    <ellipse vector-effect="non-scaling-stroke" cx="189.71371108737117"
+                                        cy="374.86898280034245" rx="1.4166421843752346" ry="0.9380682199951593"
+                                        id="Ellipse" fill="rgb(0,0,0)" />
+                                </g>
+                                <g opacity="0.43" style="mix-blend-mode:multiply;">
+                                    <ellipse vector-effect="non-scaling-stroke" cx="193.91232839249614"
+                                        cy="377.53942666090995" rx="1.4166421843752346" ry="0.9380682199951593"
+                                        id="Ellipse" fill="rgb(0,0,0)" />
+                                </g>
+                            </g>
+                            <g id="AngryEyebrows">
+                                <line x1="210.901" y1="368.318" x2="217.856" y2="365.851" id="Path"
+                                    vector-effect="non-scaling-stroke" stroke-width="1.8" stroke="rgb(0,0,0)"
+                                    stroke-linejoin="miter" stroke-linecap="square" stroke-miterlimit="3" />
+                                <line x1="206.181" y1="366.714" x2="201.71" y2="362.273" id="Path"
+                                    vector-effect="non-scaling-stroke" stroke-width="1.8" stroke="rgb(0,0,0)"
+                                    stroke-linejoin="miter" stroke-linecap="square" stroke-miterlimit="3" />
+                            </g>
+                            <g opacity="0">
+                                <rect x="158.042" y="334.991" width="109.828" height="72.072"
+                                    transform="matrix(1,0,0,1,0,0)" id="Rectangle" fill="rgb(235,235,235)" />
+                            </g>
+                            <path
+                                d=" M 210.303 358.654 C 210.092 355.026 210.789 351.883 212.514 348.678 Q 214.239 345.473 217.984 342.396 Q 217.331 345.309 217.044 347.235 C 216.694 349.581 217.004 351.407 217.385 352.923 C 217.767 354.438 217.896 355.455 218.326 356.785 Q 216.146 359.659 210.303 358.654 Z "
+                                id="Horn" fill="rgb(255,255,255)" />
+                            <g id="TopHat">
+                                <path
+                                    d=" M 213.713 350.463 L 214.089 349 L 217.682 334.991 L 231.098 338.432 L 227.125 353.918 L 229.275 354.471 L 228.914 355.878 L 211.289 351.338 L 211.65 349.932 L 213.713 350.463 Z "
+                                    fill-rule="evenodd" id="Compound Shape" fill="rgb(62,62,62)" />
+                                <rect x="213.731" y="350.322" width="13.85" height="1.901"
+                                    transform="matrix(0.969,0.248,-0.248,0.969,94.213,-43.814)" id="Rectangle"
+                                    fill="rgb(235,235,235)" />
+                            </g>
+                            <circle vector-effect="non-scaling-stroke" cx="212.30986650808822" cy="370.69013349191187"
+                                r="4.5" id="Monocle" fill="rgb(255,253,253)" fill-opacity="0.4"
+                                stroke-width="0.4" stroke="rgb(83,83,83)" stroke-linejoin="miter"
+                                stroke-linecap="square" stroke-miterlimit="3" />
+                        </g>
+                    </g>
+                </svg>
+            </div>
+        </div>
+    </div>
+    <div id="softkey" class="hide no-display" style="z-index:301">
+        <label id="left"></label>
+        <label id="center">Play Again</label>
+        <label id="right"></label>
+    </div>
+</body>
+
+</html>
